@@ -1,0 +1,28 @@
+{
+  "name": "liri-node-app",
+  "version": "1.0.0",
+  "description": "GT Week 10 Homework LIRI bot",
+  "main": "liri.js",
+  "scripts": {
+    "test": "none"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amacwhirter/liri-node-app.git"
+  },
+  "keywords": [
+    "liri",
+    "bot"
+  ],
+  "author": "adm",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amacwhirter/liri-node-app/issues"
+  },
+  "homepage": "https://github.com/amacwhirter/liri-node-app#readme",
+  "dependencies": {
+    "request": "^2.81.0",
+    "spotify": "^0.3.0",
+    "twitter": "^1.7.0"
+  }
+}
