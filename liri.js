@@ -8,10 +8,10 @@ var inquirer = require('inquirer');
 var fs = require('fs');
 
 var client = new Twitter({
-    consumer_key: 'keys.twitterKeys.consumer_key',
-    consumer_secret: 'keys.twitterKeys.consumer_secret',
-    access_token_key: 'keys.twitterKeys.access_token_key',
-    access_token_secret: 'keys.twitterKeys.access_token_secret'
+    consumer_key: keys.twitterKeys.consumer_key,
+    consumer_secret: keys.twitterKeys.consumer_secret,
+    access_token_key: keys.twitterKeys.access_token_key,
+    access_token_secret: keys.twitterKeys.access_token_secret
 });
 
 //Use inquirer for selection of commands
@@ -26,36 +26,67 @@ inquirer.prompt([{
 ]).then(function(user) {
     console.log(JSON.stringify(user, null, 2));
 
-    //Twitter========================================
+    //==========================================Twitter===============================================
 
     if (user.commands === "my-tweets") {
 
-        var params = {
-            screen_name: "ashmac10",
-            count: 20
-        };
-        client.get("statuses/user_timeline", params, function(error, tweets, response) {
-            if (!error) {
-                for (var i = 0; i < tweets.length; i++) {
-                    var user = params.screen_name;
-                    console.log(user);
-                    var tweets = tweets[i].text;
-                    var time = tweets[i].created_at;
-                    console.log("============================================");
-                    console.log("");
-                    console.log("----------------" + time + "--------------------------");
-                    console.log("@" + user + " tweeted:");
-                    console.log(tweets);
-                    console.log("");
-                    console.log("============================================");
-                }
-                //console.log(tweets);
+      //prompt user to confirm if they reallllly want to read my awesome Tweets
+
+        inquirer.prompt([{
+                type: "confirm",
+                message: "Are you sure you want to view my past posts?",
+                name: "confirm",
+                default: true
+            }
+
+        ]).then(function(user) {
+
+          //If user confirms yes and there is no error, my last 20 Tweets will be listed
+
+            if (user.confirm === true) {
+                //console.log("test");
+
+                var params = {
+                    screen_name: "ashmac10",
+                    count: 20
+                };
+
+                //console.log(params.screen_name);
+
+                client.get("statuses/user_timeline", params, function(error, response) {
+                    if (!error) {
+                        for (var i = 0; i < response.length; i++) {
+                            var time = response[i].created_at;
+                            var tweets = response[i].text;
+                            var user = params.screen_name;
+                            console.log("============================================");
+                            console.log("");
+                            console.log("----------------" + time + "--------------------------");
+                            console.log("");
+                            console.log("@" + user + " tweeted:");
+                            console.log("");
+                            console.log(tweets);
+                            console.log("");
+                            console.log("============================================");
+                        }
+                        //console.log(tweets);
+                    } else {
+                        console.log(error);
+                    }
+                });
+
+                //if user decides to not view my Tweets, console log response
+
             } else {
-                console.log("There was an err of " + error);
+                console.log("============================================");
+                console.log("");
+                console.log("Probably a wise choice! Try looking up a movie or song!");
+                console.log("");
+                console.log("============================================");
             }
         });
 
-        //Spotify===============================================
+        //=======================================Spotify===============================================
 
     } else if (user.commands === "spotify-this-song") {
 
@@ -115,7 +146,7 @@ inquirer.prompt([{
         });
 
 
-        //OMDB================================================
+        //===========================================OMDB================================================
 
     } else if (user.commands === "movie-this") {
         inquirer.prompt([{
@@ -127,55 +158,54 @@ inquirer.prompt([{
 
         ]).then(function(response) {
 
-                //run a request to the OMDB API with the movie specified by user
+            //run a request to the OMDB API with the movie specified by user
 
-                request("http://www.omdbapi.com/?t=" + response.movie + "&y=&plot=short&r=json", function(error, response, body) {
+            request("http://www.omdbapi.com/?t=" + response.movie + "&y=&plot=short&r=json", function(error, response, body) {
 
-                        // If there is no errir, and the request is successful (i.e. if the response status code is 200)
+                // If there is no errir, and the request is successful (i.e. if the response status code is 200)
 
-                        if (!error && response.statusCode === 200) {
+                if (!error && response.statusCode === 200) {
 
-                            // Parse the body of the site and recover the info needed
+                    // Parse the body of the site and recover the info needed
 
-                            console.log("======================================")
-                            console.log("");
-                            console.log("Title: " + JSON.parse(body).Title);
-                            console.log("~~~~~~~~~~~~~~~~~~~~~")
-                            console.log("Release Date: " + JSON.parse(body).Year);
-                            console.log("~~~~~~~~~~~~~~~~~~~~~")
-                            console.log("IMBD rating is: " + JSON.parse(body).imdbRating);
-                            console.log("~~~~~~~~~~~~~~~~~~~~~")
-                            console.log("Produced in (country): " + JSON.parse(body).Country);
-                            console.log("~~~~~~~~~~~~~~~~~~~~~")
-                            console.log("Main language: " + JSON.parse(body).Language);
-                            console.log("~~~~~~~~~~~~~~~~~~~~~")
-                            console.log("Plot: " + JSON.parse(body).Plot);
-                            console.log("~~~~~~~~~~~~~~~~~~~~~")
-                            console.log("Actor's include: " + JSON.parse(body).Actors);
-                            console.log("");
-                            console.log("======================================")
-                        }
-                });
+                    console.log("======================================")
+                    console.log("");
+                    console.log("Title: " + JSON.parse(body).Title);
+                    console.log("~~~~~~~~~~~~~~~~~~~~~")
+                    console.log("Release Date: " + JSON.parse(body).Year);
+                    console.log("~~~~~~~~~~~~~~~~~~~~~")
+                    console.log("IMBD rating is: " + JSON.parse(body).imdbRating);
+                    console.log("~~~~~~~~~~~~~~~~~~~~~")
+                    console.log("Produced in (country): " + JSON.parse(body).Country);
+                    console.log("~~~~~~~~~~~~~~~~~~~~~")
+                    console.log("Main language: " + JSON.parse(body).Language);
+                    console.log("~~~~~~~~~~~~~~~~~~~~~")
+                    console.log("Plot: " + JSON.parse(body).Plot);
+                    console.log("~~~~~~~~~~~~~~~~~~~~~")
+                    console.log("Actor's include: " + JSON.parse(body).Actors);
+                    console.log("");
+                    console.log("======================================")
+                }
+            });
         });
 
-    //FS===========================================================
+        //===============================================FS============================================
 
-}
-else if (user.commands === "do-what-it-says") {
-    // This block of code will read from the "random.txt" file.
-    // It's important to include the "utf8" parameter or the code will provide stream data (garbage)
-    // The code will store the contents of the reading inside the variable "data"
-    fs.readFile("random.txt", "utf8", function(error, data) {
+    } else if (user.commands === "do-what-it-says") {
+        // This block of code will read from the "random.txt" file.
+        // It's important to include the "utf8" parameter or the code will provide stream data (garbage)
+        // The code will store the contents of the reading inside the variable "data"
+        fs.readFile("random.txt", "utf8", function(error, data) {
 
-        // We will then print the contents of data
-        console.log(data);
+            // We will then print the contents of data
+            console.log(data);
 
-        // Then split it by commas (to make it more readable)
-        var dataArr = data.split(",");
+            // Then split it by commas (to make it more readable)
+            var dataArr = data.split(",");
 
-        // We will then re-display the content as an array for later use.
-        console.log(dataArr);
+            // We will then re-display the content as an array for later use.
+            console.log(dataArr);
 
-    });
-}
+        });
+    }
 });
