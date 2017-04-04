@@ -31,19 +31,23 @@ inquirer.prompt([{
     if (user.commands === "my-tweets") {
 
         var params = {
-            screen_name: "ashmac1088",
+            screen_name: "ashmac10",
             count: 20
         };
         client.get("statuses/user_timeline", params, function(error, tweets, response) {
             if (!error) {
                 for (var i = 0; i < tweets.length; i++) {
                     var user = params.screen_name;
+                    console.log(user);
                     var tweets = tweets[i].text;
                     var time = tweets[i].created_at;
+                    console.log("============================================");
+                    console.log("");
                     console.log("----------------" + time + "--------------------------");
-                    console.log("@" + user + " tweeted");
+                    console.log("@" + user + " tweeted:");
                     console.log(tweets);
-                    console.log("------------------------------------------------------");
+                    console.log("");
+                    console.log("============================================");
                 }
                 //console.log(tweets);
             } else {
@@ -97,8 +101,11 @@ inquirer.prompt([{
                         console.log("============================================");
                         console.log("");
                         console.log("Artist: " + artists);
+                        console.log("~~~~~~~~~~~~~~~~~~~~~")
                         console.log("Song Title: " + song);
+                        console.log("~~~~~~~~~~~~~~~~~~~~~")
                         console.log("Album: " + album);
+                        console.log("~~~~~~~~~~~~~~~~~~~~~")
                         console.log("Song Preview: " + preview);
                         console.log("");
                         console.log("============================================");
@@ -131,6 +138,7 @@ inquirer.prompt([{
                             // Parse the body of the site and recover the info needed
 
                             console.log("======================================")
+                            console.log("");
                             console.log("Title: " + JSON.parse(body).Title);
                             console.log("~~~~~~~~~~~~~~~~~~~~~")
                             console.log("Release Date: " + JSON.parse(body).Year);
@@ -144,12 +152,11 @@ inquirer.prompt([{
                             console.log("Plot: " + JSON.parse(body).Plot);
                             console.log("~~~~~~~~~~~~~~~~~~~~~")
                             console.log("Actor's include: " + JSON.parse(body).Actors);
+                            console.log("");
                             console.log("======================================")
                         }
-                    }
                 });
         });
-});
 
     //FS===========================================================
 
