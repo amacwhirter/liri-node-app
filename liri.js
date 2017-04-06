@@ -1,4 +1,4 @@
-//set up variables requiring npm packages
+//set variables requiring npm packages etc
 
 var keys = require('./keys.js');
 var Twitter = require('twitter');
@@ -6,6 +6,14 @@ var spotify = require('spotify');
 var request = require('request');
 var inquirer = require('inquirer');
 var fs = require('fs');
+
+//set variables for inquirer prompt functions
+
+var twitterPrompt = inquirer.createPromptModule();
+var spotifyPrompt = inquirer.createPromptModule();
+var moviePrompt = inquirer.createPromptModule();
+
+//set variable to grab hidden Twitter keys
 
 var client = new Twitter({
     consumer_key: keys.twitterKeys.consumer_key,
@@ -32,7 +40,7 @@ inquirer.prompt([{
 
       //prompt user to confirm if they reallllly want to read my awesome Tweets
 
-        inquirer.prompt([{
+        twitterPrompt([{
                 type: "confirm",
                 message: "Are you sure you want to view my past posts?",
                 name: "confirm",
@@ -92,7 +100,7 @@ inquirer.prompt([{
 
         //prompt user to type in song to lookup - 'The Sign' by Ace of Base set as default
 
-        inquirer.prompt([{
+        spotifyPrompt([{
                 type: "input",
                 message: "What song should I look up?",
                 name: "song",
@@ -143,13 +151,14 @@ inquirer.prompt([{
                     }
                 }
             });
-        });
+      });
 
 
         //===========================================OMDB================================================
 
     } else if (user.commands === "movie-this") {
-        inquirer.prompt([{
+
+        moviePrompt([{
                 type: "input",
                 message: "What movie should I look up?",
                 name: "movie",
@@ -162,7 +171,7 @@ inquirer.prompt([{
 
             request("http://www.omdbapi.com/?t=" + response.movie + "&y=&plot=short&r=json", function(error, response, body) {
 
-                // If there is no errir, and the request is successful (i.e. if the response status code is 200)
+                // If there is no error, and the request is successful (i.e. if the response status code is 200)
 
                 if (!error && response.statusCode === 200) {
 
@@ -196,16 +205,11 @@ inquirer.prompt([{
         // It's important to include the "utf8" parameter or the code will provide stream data (garbage)
         // The code will store the contents of the reading inside the variable "data"
         fs.readFile("random.txt", "utf8", function(error, data) {
+          if (error){
+            console.log(error);
+          }else{
 
-            // We will then print the contents of data
-            console.log(data);
-
-            // Then split it by commas (to make it more readable)
-            var dataArr = data.split(",");
-
-            // We will then re-display the content as an array for later use.
-            console.log(dataArr);
-
-        });
+          }
+      });
     }
-});
+  });
